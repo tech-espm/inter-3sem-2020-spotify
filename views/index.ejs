@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+		<title>
+		</title>
+    </head>
+     <body>
+         <div id="url" ><button onclick="encaminhar()">Login</button></div>
+        <script type="text/javascript">
+		
+            function encaminhar() {
+                
+                var opcoes = {
+                    url: 'http://localhost:1337/login',
+                    
+                    success: function (link) {
+                        var url = $("#url");
+                            
+                        url.html(link);
+
+                        //window.location.href = link;
+                          window.open(link)
+                    },
+                    
+                    error: function () {
+                        
+                        alert("Erro");
+                    }
+                };
+                
+                $.ajax(opcoes);
+                
+            }
+            
+            
+            
+        </script>
+     </body>
+
+	
+</html>
