@@ -5,9 +5,9 @@ const info = api.getMe();
 
 
 export = class Usuario {
-    public id : number;
+    public idspotify : number = info.body.id;
     public nome : string = info.body.display_name;
-    public email : string;
+    public email : string = info.body.email;
 
     public static async listarTodos(): Promise<Usuario[]>{
         let lista: Usuario[];
@@ -22,7 +22,7 @@ export = class Usuario {
 
     public static async inserir(usuario:Usuario): Promise<void>{
         await Sql.conectar(async (sql)=>{
-            await sql.query("INSERT INTO usuario(nome,email) VALUES (?,?)",[usuario.nome,usuario.email]);
+            await sql.query("INSERT INTO usuario(id,nome,email) VALUES (?,?,?)",[usuario.idspotify,usuario.nome,usuario.email]);
         })
     }
 }
