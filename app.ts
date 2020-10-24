@@ -41,7 +41,7 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
 let accessToken = "";
 let refreshToken = "";
 
- function createApi(accessToken: string = null, refreshToken: string = null): SpotifyWebApi {
+  function createApi(accessToken: string = null, refreshToken: string = null): SpotifyWebApi {
 	const api = new SpotifyWebApi({
 		clientId: clientId,
 		clientSecret: clientSecret,
@@ -53,6 +53,16 @@ let refreshToken = "";
 
 	if (refreshToken)
 		api.setRefreshToken(refreshToken);
+
+	return api;
+}
+
+exports.ap = function createApi(): SpotifyWebApi {
+	const api = new SpotifyWebApi({
+		clientId: clientId,
+		clientSecret: clientSecret,
+		redirectUri: redirectUri
+	});
 
 	return api;
 }
@@ -171,5 +181,4 @@ app.get("/", (req: express.Request, res: express.Response) => {
 app.listen(1337, () => {
 	console.log("Executando servidor");
 });
-
 
