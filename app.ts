@@ -117,8 +117,7 @@ app.get("/info", wrap(async (req: express.Request, res: express.Response) => {
 		
 		res.json(info);
 		
-
-
+		
 	} catch (ex) {
 		res.json("Erro: " + ex);
 	}
@@ -142,6 +141,7 @@ app.get("/tracks", wrap(async (req: express.Request, res: express.Response) => {
 			toptracks.push(tracks.body.items[i].name);
 		}		
 		res.json(tracks);
+		
 	} catch (ex) {
 		res.json("Erro: " + ex);
 	}
