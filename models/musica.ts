@@ -2,7 +2,7 @@ import Sql = require("../infra/sql");
 import SpotifyWebApi = require("spotify-web-api-node");
 import app = require("../app");
 import Usuario = require("./usuario");
-
+/*
 const clientId = process.env.clientId;
 const clientSecret = process.env.clientSecret;
 const redirectUri = "http://localhost:1337/callback";
@@ -17,7 +17,7 @@ const toptracks :Array <String> = [];
 	for (let i = 0;i<10;i++){
 		toptracks.push(tracks.body.items[i].id);
 		}
-
+*/
 /*export = class MusicaMaisTocadas {
     public usuario : Usuario;
     public musicas: Array<String> = toptracks;

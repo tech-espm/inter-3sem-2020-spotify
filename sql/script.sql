@@ -8,7 +8,8 @@ CREATE TABLE usuario (
   email varchar(100) NOT NULL,
   telefone varchar(50) DEFAULT NULL,
   token varchar(50) DEFAULT NULL,
-  datanascimento datetime NOT NULL,
+  accessToken varchar(200) DEFAULT NULL,
+  refreshToken varchar(200) DEFAULT NULL,
   criacao datetime NOT NULL,
   PRIMARY KEY (idusuario),
   UNIQUE KEY usuario_idspotify_UN (idspotify)

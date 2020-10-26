@@ -1,53 +1,55 @@
 import Sql = require("../infra/sql");
-import SpotifyWebApi = require("spotify-web-api-node");
-import app = require("../app");
-
-const clientId = process.env.clientId;
-const clientSecret = process.env.clientSecret;
-const redirectUri = "http://localhost:1337/callback";
-
-
-const info = app.ap().getMe();
-
 
 export = class Usuario {
-    public idspotify : string = info.body.id;
-    public nome : string = info.body.display_name;
-    public email : string = info.body.email;
-    
+	public idusuario: number;
+	public idspotify: string;
+	public nome: string;
+	public email: string;
+	public accessToken: string;
+	public refreshToken: string;
+	public telefone: string;
+	public criacao: string;
 
-    public static async listarTodos(): Promise<Usuario[]>{
-        let lista: Usuario[];
+	public static async obterIdUsuario(idspotify: string): Promise<number> {
+		let idusuario = 0;
 
-        await Sql.conectar(async(sql) => {
-            lista = await sql.query("SELECT id,nome,email FROM usuario ORDER BY nome");
-        }
+		await Sql.conectar(async(sql) => {
+			idusuario = await sql.scalar("SELECT idusuario FROM usuario WHERE idspotify = ?", [idspotify]);
+		});
 
-        );
-        return lista;
-    }
+		return idusuario;
+	}
 
-    public static async obter(id:String): Promise<Usuario[]>{
-        let user: Usuario[] = null;
-        await Sql.conectar(async(sql) => {
-            user = await sql.query("SELECT id,nome,email FROM usuario WHERE id=?",[id]);
-        });
-        return user;
-    }
+	public static async obter(idspotify: string): Promise<Usuario> {
+		let lista: Usuario[] = null;
 
-    public static async inserir(usuario:Usuario): Promise<void>{
-        await Sql.conectar(async (sql)=>{
-            await sql.query("INSERT INTO usuario(id,nome,email) VALUES (?,?,?)",[usuario.idspotify,usuario.nome,usuario.email]);
-        })
-    }
-    public static async atualizar(usuario:Usuario): Promise<void>{
-        await Sql.conectar(async (sql)=>{
-            await sql.query("UPDATE usuario SET nome=?,email=? WHERE id=?",[usuario.nome,usuario.email,usuario.idspotify]);
-        })
-    }
-    public static async deletar(usuario:Usuario): Promise<void>{
-        await Sql.conectar(async(sql)=>{
-            await sql.query("DELETE FROM usuario WHERE id=?",[usuario.idspotify]);
-        })
-    }
+		await Sql.conectar(async(sql) => {
+			// @@@ Voltar quando o cookie estiver funcionando
+			//lista = await sql.query("SELECT idusuario, idspotify, nome, email, accessToken, refreshToken FROM usuario WHERE idspotify = ?", [idspotify]);
+			lista = await sql.query("SELECT idusuario, idspotify, nome, email, accessToken, refreshToken FROM usuario limit 1");
+		});
+
+		if (lista && lista[0])
+			return lista[0];
+
+		return null;
+	}
+
+	public static async inserir(usuario: Usuario): Promise<void> {
+		await Sql.conectar(async (sql)=>{
+			await sql.query("INSERT INTO usuario (idspotify, nome, email, accessToken, refreshToken, criacao) VALUES (?, ?, ?, ?, ?, now())", [usuario.idspotify, usuario.nome, usuario.email, usuario.accessToken, usuario.refreshToken]);
+		});
+	}
+
+	public static async atualizar(usuario: Usuario): Promise<void> {
+		await Sql.conectar(async (sql)=>{
+			await sql.query("UPDATE usuario SET nome = ?, email = ?, accessToken = ?, refreshToken = ? WHERE idspotify = ?", [usuario.nome, usuario.email, usuario.accessToken, usuario.refreshToken, usuario.idspotify]);
+		});
+	}
+
+	public static async deletar(usuario:Usuario): Promise<void> {
+		await Sql.conectar(async (sql)=>{
+			await sql.query("DELETE FROM usuario WHERE idspotify = ?", [usuario.idspotify]);
+		});
+	}
 }
