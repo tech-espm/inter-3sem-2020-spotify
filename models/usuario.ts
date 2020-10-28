@@ -53,7 +53,7 @@ export = class Usuario {
 					return;
 
 				// Só atualiza se estiver sobrando menos de 30 minutos
-				if (-delta < (60 * 60)) {
+				if (-delta < (30 * 60)) {
 					const api = SpotifyClient.createApi(row.accessToken, row.refreshToken);
 					const dadosNovos = await SpotifyClient.refreshAccessToken(api);
 					if (dadosNovos) {
