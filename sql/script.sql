@@ -10,6 +10,7 @@ CREATE TABLE usuario (
   token varchar(50) DEFAULT NULL,
   accessToken varchar(200) DEFAULT NULL,
   refreshToken varchar(200) DEFAULT NULL,
+  validadeToken bigint DEFAULT NULL,
   criacao datetime NOT NULL,
   PRIMARY KEY (idusuario),
   UNIQUE KEY usuario_idspotify_UN (idspotify)

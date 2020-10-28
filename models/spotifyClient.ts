@@ -24,4 +24,18 @@ export = class SpotifyClient {
 	
 		return api;
 	}
+
+	public static async refreshAccessToken(api: SpotifyWebApi): Promise<any> {
+		return new Promise((resolve, reject) => {
+			api.refreshAccessToken().then(
+				(data: any) => {
+					resolve(data.body);
+				},
+				(error: any) => {
+					console.log("Could not refresh the token!", error.message);
+					resolve(null);
+				}
+			);
+		});
+	}
 }

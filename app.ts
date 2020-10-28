@@ -1,4 +1,5 @@
 import express = require("express");
+import cookieParser = require("cookie-parser");
 import wrap = require("express-async-error-wrapper");
 import ejs = require("ejs");
 import path = require("path");
@@ -10,7 +11,7 @@ const app = express();
 
 //views e cache
 app.set("views", path.join(__dirname, "/views"));
-
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "/public"), {
 	cacheControl: true,
 	etag: false,
@@ -44,45 +45,16 @@ app.get("/callback", wrap(async (req: express.Request, res: express.Response) =>
 
 	const code = req.query["code"] as string;
 
-	let api = SpotifyClient.createApi();
-
-	const data = await api.authorizationCodeGrant(code);
-
-	const usuario = new Usuario();
-	usuario.accessToken = data.body.access_token;
-	usuario.refreshToken = data.body.refresh_token;
-
-	api = SpotifyClient.createApi(usuario.accessToken, usuario.refreshToken);
-
-	const me = await api.getMe();
-
-	usuario.idspotify = me.body.id;
-	usuario.nome = me.body.display_name;
-	usuario.email = me.body.email;
-
-	usuario.idusuario = await Usuario.obterIdUsuario(usuario.idspotify);
-
-	if (!usuario.idusuario) {
-		await Usuario.inserir(usuario);
-	} else {
-		await Usuario.atualizar(usuario);
-	}
-
-	console.log('The token expires in ' + data.body['expires_in']);
-	console.log('The access token is ' + data.body['access_token']);
-	console.log('The refresh token is ' + data.body['refresh_token']);
+	const usuario = await Usuario.efetuarLogin(res, code);
 
 	res.json("Código recebido: " + code);
-
-	// @@@ Gerar cookie de login...
 
 }));
 
 app.get("/tracks", wrap(async (req: express.Request, res: express.Response) => {
 
 	try {
-		// @@@ Obter o idspotify e token do cookie...
-		const usuario = await Usuario.obter(null);
+		const usuario = await Usuario.cookie(req);
 
 		if (!usuario) {
 			res.status(400).json("Usuário não encontrado");
@@ -115,8 +87,7 @@ app.get("/tracks", wrap(async (req: express.Request, res: express.Response) => {
 app.get("/artists", wrap(async (req: express.Request, res: express.Response) => {
 
 	try {
-		// @@@ Obter o idspotify e token do cookie...
-		const usuario = await Usuario.obter(null);
+		const usuario = await Usuario.cookie(req);
 
 		if (!usuario) {
 			res.status(400).json("Usuário não encontrado");
