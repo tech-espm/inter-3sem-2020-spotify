@@ -9,11 +9,6 @@ const tracks = api.getMyTopTracks({
     time_range: "medium_term"
     });
 
-const toptracks :Array <String> = [];
-	for (let i = 0;i<10;i++){
-		toptracks.push(tracks.body.items[i].id);
-		}
-
 export = class Musicas {
     public idmusica: String;
     public idspotify : String;
@@ -23,7 +18,7 @@ export = class Musicas {
 
     public static async inserir(musicas:Musicas): Promise<void>{
         await Sql.conectar(async (sql)=>{
-            await sql.query("INSERT INTO musicas(idspotify) VALUES (?,?,?,?)",[musicas.idspotify, musicas.nome, musicas.idalbum, musicas.nomealbum]);
+            await sql.query("INSERT INTO musicas(idspotify,nome,idalbum,nomealbum) VALUES (?,?,?,?)",[musicas.idspotify, musicas.nome, musicas.idalbum, musicas.nomealbum]);
         })
     }
 
