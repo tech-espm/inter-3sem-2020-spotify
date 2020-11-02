@@ -1,11 +1,10 @@
 import Sql = require("../infra/sql");
-import SpotifyWebApi = require("spotify-web-api-node");
-import app = require("../app");
-import Usuario = require("./usuario");
-/*
+import SpotifyClient = require("./spotifyClient");
 
-const tracks =  app.ap().getMyTopTracks({
-    limit: 10,
+let api = SpotifyClient.createApi();
+
+const tracks = api.getMyTopTracks({
+    limit: 50,
     offset: 0,
     time_range: "medium_term"
     });
@@ -14,13 +13,35 @@ const toptracks :Array <String> = [];
 	for (let i = 0;i<10;i++){
 		toptracks.push(tracks.body.items[i].id);
 		}
-*/
-/*export = class Musicas {
-    public musicas: Array<String> = toptracks;
 
-    public static async inserir(usuario:Usuario,musicas:Array<String>): Promise<void>{
+export = class Musicas {
+    public idmusica: String;
+    public idspotify : String;
+    public nome : String;
+    public idalbum : String;
+    public nomealbum : String;
+
+    public static async inserir(musicas:Musicas): Promise<void>{
         await Sql.conectar(async (sql)=>{
-            await sql.query("INSERT INTO musicas(idspotify) VALUES (?,?)",[id]);
+            await sql.query("INSERT INTO musicas(idspotify) VALUES (?,?,?,?)",[musicas.idspotify, musicas.nome, musicas.idalbum, musicas.nomealbum]);
         })
     }
-}*/
+
+    public static async obter(idspotify: String): Promise<Musicas> {
+		let lista: Array<Musicas> = null;
+
+		await Sql.conectar(async(sql) => {
+			lista = await sql.query("SELECT idspotify,nome,idalbum,nomealbum FROM musicas WHERE idspotify = ?", [idspotify])
+		});
+
+		return lista[0];
+    }
+    
+	public static async deletar(musica:Musicas): Promise<void> {
+		await Sql.conectar(async (sql)=>{
+			await sql.query("DELETE FROM musica WHERE idspotify = ?", [musica.idspotify]);
+		});
+	}
+
+
+}
