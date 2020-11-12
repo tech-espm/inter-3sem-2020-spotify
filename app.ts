@@ -6,6 +6,7 @@ import path = require("path");
 import lru = require("lru-cache");
 import SpotifyClient = require("./models/spotifyClient");
 import Musica = require("./models/musica");
+import Artista = require("./models/artista")
 import Usuario = require("./models/usuario");
 
 const app = express();
@@ -112,17 +113,30 @@ app.get("/artists", wrap(async (req: express.Request, res: express.Response) => 
 		// https://developer.spotify.com/documentation/web-api/reference/personalization/get-users-top-artists-and-tracks/
 		const api = SpotifyClient.createApi(usuario.accessToken, usuario.refreshToken);
 
-		const artists = await api.getMyTopArtists({
+		const response = await api.getMyTopArtists({
 			limit: 10,
 			offset: 0,
 			time_range: "medium_term"
 		});
 
-		let topartists :Array<String> = [];
-		for (let i = 0;i<10;i++){
-			topartists.push(artists.body.items[i].name);
-		}	
-		res.json(artists);
+		if (response.body && response.body.items) {
+			let topartists: Artista[] = [];
+
+			for (let i = 0; i < response.body.items.length; i++) {
+				const artist = response.body.items[i];
+
+				const artista = new Artista();
+				artista.idartista = 0;
+				artista.idspotify = artist.id;
+				artista.nome = artist.name;
+				topartists.push(artista);
+				
+			}
+
+			await Artista.merge(usuario.idusuario, topartists);
+		}
+
+		res.json(await Artista.listar(usuario.idusuario));
 	} catch (ex) {
 		res.status(500).json("Erro: " + ex);
 	}
