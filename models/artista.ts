@@ -1,13 +1,6 @@
 import Sql = require("../infra/sql");
+import Musica = require("./musica");
 import SpotifyClient = require("./spotifyClient");
-
-let api = SpotifyClient.createApi();
-
-const artists =  api.getMyTopArtists({
-    limit: 10,
-    offset: 0,
-    time_range: "medium_term"
-});
 
 export = class Artista {
     public idartista: number;
@@ -35,8 +28,5 @@ export = class Artista {
 			await sql.query("DELETE FROM artista WHERE idspotify = ?", [artista.idspotify]);
 		});
 	}
-
-
-
 }
 
