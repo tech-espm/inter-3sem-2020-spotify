@@ -8,6 +8,7 @@ import SpotifyClient = require("./models/spotifyClient");
 import Musica = require("./models/musica");
 import Artista = require("./models/artista")
 import Usuario = require("./models/usuario");
+import Genero = require("./models/genero");
 
 const app = express();
 
@@ -142,6 +143,49 @@ app.get("/artists", wrap(async (req: express.Request, res: express.Response) => 
 	}
 
 }));
+
+app.get("/genres", wrap(async (req: express.Request, res: express.Response) => {
+	try {
+		const usuario = await Usuario.cookie(req);
+
+		if (!usuario) {
+			res.status(400).json("Usuário não encontrado");
+			return;
+		}
+
+		// https://developer.spotify.com/documentation/web-api/reference/personalization/get-users-top-artists-and-tracks/
+		const api = SpotifyClient.createApi(usuario.accessToken, usuario.refreshToken);
+		const response = await api.getMyTopArtists({
+			limit: 10,
+			offset: 0,
+			time_range: "medium_term"
+		});
+		let lista = [];
+		let genres: Genero[] = [];
+		if (response.body && response.body.items) {
+			let idspotify: string = "";
+		for(let i = 0; i < response.body.items.length; i++){
+			const artist = response.body.items[i];
+			let idspotify = artist.id;
+
+			for(let j = 0;j<artist.genres.length;j++){
+				const genero = new Genero();
+				genero.idgenero = 0;
+				genero.nome = artist.genres[j];
+				genres.push(genero);
+			}
+			lista.push(await Genero.listar(idspotify))
+			await Genero.genero(idspotify,genres);
+		}
+		
+	}
+		res.json(genres);
+	}
+	catch (ex) {
+		res.status(500).json("Erro: " + ex);
+	}
+}));
+
 
 app.get("/", (req: express.Request, res: express.Response) => {
 
