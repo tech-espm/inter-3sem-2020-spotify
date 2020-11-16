@@ -23,6 +23,14 @@ export = class Musica {
             for (let i = 0; i < musicas.length; i++) {
                 let idmusica = await sql.scalar("select idmusica from musica where idspotify = ?", [musicas[i].idspotify]) as number;
                 if (!idmusica) {
+                    musicas[i].nome = (musicas[i].nome || "").normalize().trim();
+                    if (musicas[i].nome && musicas[i].nome.length > 100)
+                        musicas[i].nome = musicas[i].nome.substr(0, 100);
+
+                    musicas[i].nomealbum = (musicas[i].nomealbum || "").normalize().trim();
+                    if (musicas[i].nomealbum && musicas[i].nomealbum.length > 50)
+                        musicas[i].nomealbum = musicas[i].nomealbum.substr(0, 50);
+
                     await sql.query("insert into musica (idspotify, nome, idalbum, nomealbum) values (?, ?, ?, ?)", [musicas[i].idspotify, musicas[i].nome, musicas[i].idalbum, musicas[i].nomealbum]);
                     idmusica = await sql.scalar("select last_insert_id()");
                 }

@@ -11,19 +11,18 @@ export = class Genero {
             let idartista = await sql.scalar("select idartista from artista where idspotify = ?", [idspotify]) as number;
 
             //Inserir cada genero da lista se ja existir pega o idgenero
-            
-            for (let i = 0; i < generos.length; i++) {
-                let idgenero = await sql.scalar("select idgenero from genero where nome = ?", [generos[i].nome]) as number;
-                if (!idgenero) {
-                    await sql.query("insert into genero (nome) values (?)", [generos[i].nome]);
-                    idgenero = await sql.scalar("select last_insert_id()");
-                }
-                generos[i].idgenero = idgenero;
-                //Inserir idartista e idgenero em artista_genero
-                if(idartista)
+            if (idartista) {
+                for (let i = 0; i < generos.length; i++) {
+                    let idgenero = await sql.scalar("select idgenero from genero where nome = ?", [generos[i].nome]) as number;
+                    if (!idgenero) {
+                        await sql.query("insert into genero (nome) values (?)", [generos[i].nome]);
+                        idgenero = await sql.scalar("select last_insert_id()");
+                    }
+                    generos[i].idgenero = idgenero;
+                    //Inserir idartista e idgenero em artista_genero
                     await sql.query("insert into artista_genero (idartista, idgenero) values (?, ?)", [idartista,idgenero]);
+                }
             }
-
             
         });
     }
