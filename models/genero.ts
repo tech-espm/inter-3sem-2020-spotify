@@ -1,5 +1,11 @@
 import Sql = require("../infra/sql");
 
+class ArtistaGenero {
+    public idartista_genero : number;
+    public idartista : number;
+    public idgenero : number
+}
+
 
 export = class Genero {
     public idgenero: number;
@@ -7,6 +13,7 @@ export = class Genero {
 
     public static async genero(idspotify:string,generos: Genero[]): Promise<void> {
         await Sql.conectar(async (sql) => {
+            let generosNovos: ArtistaGenero[] = [];
             //Pegar idartista pelo idspotify            
             let idartista = await sql.scalar("select idartista from artista where idspotify = ?", [idspotify]) as number;
 
@@ -19,9 +26,47 @@ export = class Genero {
                         idgenero = await sql.scalar("select last_insert_id()");
                     }
                     generos[i].idgenero = idgenero;
-                    //Inserir idartista e idgenero em artista_genero
-                    await sql.query("insert into artista_genero (idartista, idgenero) values (?, ?)", [idartista,idgenero]);
+                    
+                    const generoNovo = new ArtistaGenero();
+                    generoNovo.idartista = idartista;
+                    generoNovo.idgenero = idgenero;
+                    generosNovos.push(generoNovo);
                 }
+                let generosExistentes = await sql.query("select idartista_genero, idartista, idgenero from artista_genero where idartista = ?", [idartista]) as ArtistaGenero[];
+                if (!generosExistentes)
+                    generosExistentes = [];
+    
+                let generosParaExcluir: ArtistaGenero[] = [];
+
+                for (let i = generosExistentes.length - 1; i >= 0; i--) {
+                    const generoExistente = generosExistentes[i];
+                    let estaPresenteNaNovaLista = false;
+    
+                    for (let j = 0; j < generosNovos.length; j++) {
+                        if (generoExistente.idgenero === generosNovos[j].idgenero) {
+                            estaPresenteNaNovaLista = true;
+                            generosNovos.splice(j, 1);
+                            break;
+                        }
+                    }
+    
+                    if (!estaPresenteNaNovaLista) {
+                        generosParaExcluir.push(generoExistente);
+                        generosExistentes.splice(i, 1);
+                    }
+                }
+
+                await sql.beginTransaction();
+
+                for (let i = 0; i < generosParaExcluir.length; i++) {
+                    await sql.query("delete from musica_mais_tocada where idmusica_mais_tocada = ?", [generosParaExcluir[i].idartista_genero]);
+                }
+                for (let i = 0; i < generosNovos.length; i++) {
+                    await sql.query("insert into musica_mais_tocada (idusuario, idmusica, ordem) values (?, ?, ?)", [generosNovos[i].idartista, generosNovos[i].idgenero]);
+                }
+    
+                await sql.commit();
+
             }
             
         });

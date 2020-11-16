@@ -151,7 +151,7 @@ app.get("/artists", wrap(async (req: express.Request, res: express.Response) => 
 			}
 		}
 
-		res.json(await Artista.listar(usuario.idusuario));
+		res.json(response);
 	} catch (ex) {
 		res.status(500).json("Erro: " + ex);
 	}
