@@ -1,7 +1,16 @@
 import { randomBytes } from "crypto";
 import express = require("express");
 import Sql = require("../infra/sql");
+import Artista = require("./artista");
+import Musica = require("./musica");
 import SpotifyClient = require("./spotifyClient");
+
+class Afinidade {
+	public idusuario : number;
+	public idusuario2 : number;
+	public afinidade : number;
+
+}
 
 export = class Usuario {
 	private static readonly NomeCookie = "usuarioSpotify";
@@ -165,15 +174,41 @@ export = class Usuario {
 		});
 	}
 
-	/*public static async afinidade(usuario:Usuario): Promise<void> {
-		let lista: number[];	
+	public static async afinidade(usuario:Usuario): Promise<Afinidade[]> {
+		let lista: number[];
+		let res : Afinidade[];	
+		let musicas: Musica[] = await Musica.listar(usuario.idusuario);
+		let artistas: Artista[] = await Artista.listar(usuario.idusuario);
+		let cont = 0;
 		
 		await Sql.conectar(async(sql) =>{
-			lista = await sql.query("SELECT idusuario FROM usuario");
-			for(let i=0;i<lista.length;i++){
-			
-			}
+			if(lista){
+				lista = await sql.query("SELECT idusuario FROM usuario");
+				for(let i=0;i<lista.length;i++){
+					if(i==usuario.idusuario){
+						i++;
+						break;
+					}
+					let musicas_comparar: Musica[] = await Musica.listar(i);
+					let artistas_comparar: Artista[] = await Artista.listar(i);
+					for(let j=0;j<musicas.length;j++){
+						for(let x=0;x<musicas_comparar.length;x++){
+							if(musicas[j]===musicas_comparar[x]){
+								cont = cont + 1;
+							}
+							if(artistas[j]===artistas_comparar[x]){
+								cont = cont + 1;
+							}
+						}
+					}
+					await sql.query("INSERT INTO afinidade VALUES(?,?,?)"[usuario.idusuario,i,cont]);
+					
+				}
+				res = await sql.query("SELECT afinidade FROM afinidade where idusuario = ?"[usuario.idusuario]);
+				
+		    }
 		});
+		return res;
 
-	}*/
+	}
 }

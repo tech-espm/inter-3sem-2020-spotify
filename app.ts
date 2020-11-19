@@ -151,10 +151,28 @@ app.get("/artists", wrap(async (req: express.Request, res: express.Response) => 
 			}
 		}
 
-		res.json(response);
+		res.json(await Artista.listar(usuario.idusuario));
 	} catch (ex) {
 		res.status(500).json("Erro: " + ex);
 	}
+
+}));
+
+app.get("/afinidade", wrap(async (req: express.Request, res: express.Response) => {
+	try {
+		const usuario = await Usuario.cookie(req);
+
+		if (!usuario) {
+			res.status(400).json("Usuário não encontrado");
+			return;
+		}
+
+		res.json(await Usuario.afinidade(usuario));
+	}
+	
+	catch (ex) {
+			res.status(500).json("Erro: " + ex);
+		}
 
 }));
 
