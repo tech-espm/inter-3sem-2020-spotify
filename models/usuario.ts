@@ -146,7 +146,6 @@ export = class Usuario {
 
 		return null;
 	}
-
 	public static async inserir(usuario: Usuario): Promise<void> {
 		await Sql.conectar(async (sql)=>{
 			await sql.query("INSERT INTO usuario (idspotify, nome, email, accessToken, refreshToken, validadeToken, criacao) VALUES (?, ?, ?, ?, ?, ?, now())", [usuario.idspotify, usuario.nome, usuario.email, usuario.accessToken, usuario.refreshToken, usuario.validadeToken]);
@@ -165,4 +164,16 @@ export = class Usuario {
 			await sql.query("DELETE FROM usuario WHERE idspotify = ?", [usuario.idspotify]);
 		});
 	}
+
+	/*public static async afinidade(usuario:Usuario): Promise<void> {
+		let lista: number[];	
+		
+		await Sql.conectar(async(sql) =>{
+			lista = await sql.query("SELECT idusuario FROM usuario");
+			for(let i=0;i<lista.length;i++){
+			
+			}
+		});
+
+	}*/
 }

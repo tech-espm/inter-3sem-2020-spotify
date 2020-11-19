@@ -59,10 +59,10 @@ export = class Genero {
                 await sql.beginTransaction();
 
                 for (let i = 0; i < generosParaExcluir.length; i++) {
-                    await sql.query("delete from musica_mais_tocada where idmusica_mais_tocada = ?", [generosParaExcluir[i].idartista_genero]);
+                    await sql.query("delete from artista_genero where idartista_genero = ?", [generosParaExcluir[i].idartista_genero]);
                 }
                 for (let i = 0; i < generosNovos.length; i++) {
-                    await sql.query("insert into musica_mais_tocada (idusuario, idmusica, ordem) values (?, ?, ?)", [generosNovos[i].idartista, generosNovos[i].idgenero]);
+                    await sql.query("insert into artista_genero (idartista, idgenero) values (?, ?)", [generosNovos[i].idartista, generosNovos[i].idgenero]);
                 }
     
                 await sql.commit();

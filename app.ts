@@ -68,7 +68,7 @@ app.get("/tracks", wrap(async (req: express.Request, res: express.Response) => {
 		const api = SpotifyClient.createApi(usuario.accessToken, usuario.refreshToken);
 
 		const response = await api.getMyTopTracks({
-			limit: 10,
+			limit: 50,
 			offset: 0,
 			time_range: "medium_term"
 		});
@@ -115,7 +115,7 @@ app.get("/artists", wrap(async (req: express.Request, res: express.Response) => 
 		const api = SpotifyClient.createApi(usuario.accessToken, usuario.refreshToken);
 
 		const response = await api.getMyTopArtists({
-			limit: 10,
+			limit: 50,
 			offset: 0,
 			time_range: "medium_term"
 		});
