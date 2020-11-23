@@ -8,8 +8,8 @@ CREATE TABLE usuario (
   email varchar(100) NOT NULL,
   telefone varchar(50) DEFAULT NULL,
   token varchar(50) DEFAULT NULL,
-  accessToken varchar(200) DEFAULT NULL,
-  refreshToken varchar(200) DEFAULT NULL,
+  accessToken varchar(500) DEFAULT NULL,
+  refreshToken varchar(500) DEFAULT NULL,
   validadeToken bigint DEFAULT NULL,
   criacao datetime NOT NULL,
   PRIMARY KEY (idusuario),
@@ -21,7 +21,7 @@ CREATE TABLE musica (
   idspotify varchar(50) NOT NULL,
   nome varchar(100) NOT NULL,
   idalbum varchar(50) NOT NULL,
-  nomealbum varchar(50) NOT NULL,
+  nomealbum varchar(500) NOT NULL,
   PRIMARY KEY (idmusica),
   UNIQUE KEY musica_idspotify_UN (idspotify)
 );
@@ -36,10 +36,8 @@ CREATE TABLE artista (
 
 CREATE TABLE genero (
   idgenero bigint NOT NULL AUTO_INCREMENT,
-  idspotify varchar(50) NOT NULL,
   nome varchar(100) NOT NULL,
-  PRIMARY KEY (idgenero),
-  UNIQUE KEY genero_idspotify_UN (idspotify)
+  PRIMARY KEY (idgenero)
 );
 
 CREATE TABLE artista_genero (
@@ -76,3 +74,14 @@ CREATE TABLE musica_mais_tocada (
   CONSTRAINT idmusica_mais_tocada_idusuario_FK FOREIGN KEY (idusuario) REFERENCES usuario (idusuario) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT idmusica_mais_tocada_idmusica_FK FOREIGN KEY (idmusica) REFERENCES musica (idmusica) ON DELETE CASCADE ON UPDATE RESTRICT
 );
+
+CREATE TABLE afinidade (
+  idafinidade bigint NOT NULL AUTO_INCREMENT,
+  idusuario bigint NOT NULL,
+  idusuario2 bigint NOT NULL,
+  afinidade bigint NOT NULL, 
+  PRIMARY KEY (idafinidade),
+  UNIQUE KEY idafinidade_UN (idusuario),
+  KEY (idusuario),
+  CONSTRAINT idafinidade_idusuario_FK FOREIGN KEY (idusuario) REFERENCES usuario (idusuario) ON DELETE CASCADE ON UPDATE RESTRICT
+  );
