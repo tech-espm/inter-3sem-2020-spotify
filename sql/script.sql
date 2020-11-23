@@ -12,6 +12,7 @@ CREATE TABLE usuario (
   refreshToken varchar(500) DEFAULT NULL,
   validadeToken bigint DEFAULT NULL,
   criacao datetime NOT NULL,
+  dataAfinidade datetime NULL,
   PRIMARY KEY (idusuario),
   UNIQUE KEY usuario_idspotify_UN (idspotify)
 );
@@ -79,9 +80,9 @@ CREATE TABLE afinidade (
   idafinidade bigint NOT NULL AUTO_INCREMENT,
   idusuario bigint NOT NULL,
   idusuario2 bigint NOT NULL,
-  afinidade bigint NOT NULL, 
+  afinidade tinyint NOT NULL, 
   PRIMARY KEY (idafinidade),
-  UNIQUE KEY idafinidade_UN (idusuario),
-  KEY (idusuario),
-  CONSTRAINT idafinidade_idusuario_FK FOREIGN KEY (idusuario) REFERENCES usuario (idusuario) ON DELETE CASCADE ON UPDATE RESTRICT
-  );
+  UNIQUE KEY idafinidade_UN (idusuario, idusuario2),
+  CONSTRAINT idafinidade_idusuario_FK FOREIGN KEY (idusuario) REFERENCES usuario (idusuario) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT idafinidade_idusuario2_FK FOREIGN KEY (idusuario2) REFERENCES usuario (idusuario) ON DELETE CASCADE ON UPDATE RESTRICT
+);

@@ -6,10 +6,9 @@ import Musica = require("./musica");
 import SpotifyClient = require("./spotifyClient");
 
 class Afinidade {
-	public idusuario : number;
 	public idusuario2 : number;
+	public nome : string;
 	public afinidade : number;
-
 }
 
 export = class Usuario {
@@ -175,40 +174,47 @@ export = class Usuario {
 	}
 
 	public static async afinidade(usuario:Usuario): Promise<Afinidade[]> {
-		let lista: number[];
-		let res : Afinidade[];	
-		let musicas: Musica[] = await Musica.listar(usuario.idusuario);
-		let artistas: Artista[] = await Artista.listar(usuario.idusuario);
-		let cont = 0;
-		
-		await Sql.conectar(async(sql) =>{
-			if(lista){
-				lista = await sql.query("SELECT idusuario FROM usuario");
-				for(let i=0;i<lista.length;i++){
-					if(i==usuario.idusuario){
-						i++;
-						break;
-					}
-					let musicas_comparar: Musica[] = await Musica.listar(i);
-					let artistas_comparar: Artista[] = await Artista.listar(i);
-					for(let j=0;j<musicas.length;j++){
-						for(let x=0;x<musicas_comparar.length;x++){
-							if(musicas[j]===musicas_comparar[x]){
-								cont = cont + 1;
-							}
-							if(artistas[j]===artistas_comparar[x]){
-								cont = cont + 1;
-							}
-						}
-					}
-					await sql.query("INSERT INTO afinidade VALUES(?,?,?)"[usuario.idusuario,i,cont]);
-					
-				}
-				res = await sql.query("SELECT afinidade FROM afinidade where idusuario = ?"[usuario.idusuario]);
-				
-		    }
-		});
-		return res;
+		let lista: Afinidade[] = null;
 
+		await Sql.conectar(async(sql) => {
+			const id = await sql.scalar("SELECT idusuario FROM usuario where idusuario = ? and dataAfinidade >= adddate(now(), -7)", [usuario.idusuario]) as number;
+
+			if (!id) {
+				// Hora de gerar a afinidade de novo
+				await sql.query("delete from afinidade where idusuario = ?", [usuario.idusuario]);
+				await sql.query(`insert into afinidade (idusuario, idusuario2, afinidade)
+					select ?, mmt2.idusuario, count(*) afinidade
+					from musica_mais_tocada mmt
+					inner join musica_mais_tocada mmt2 on mmt2.idmusica = mmt.idmusica
+					where mmt.idusuario = ?
+					group by mmt2.idusuario
+					order by afinidade desc
+					limit 10`, [usuario.idusuario, usuario.idusuario]);
+				await sql.query("update usuario set dataAfinidade = now() where idusuario = ?", [usuario.idusuario]);
+			}
+
+			//lista = await sql.query(`select a.idusuario2, u.nome, a.afinidade
+			//	from afinidade a
+			//	inner join usuario u on u.idusuario = a.idusuario2
+			//	where a.idusuario = ? and a.idusuario2 <> ?
+			//	order by a.afinidade desc, u.nome asc`, [usuario.idusuario, usuario.idusuario]);
+			lista = await sql.query(`select a.idusuario2, u.nome, a.afinidade
+				from afinidade a
+				inner join usuario u on u.idusuario = a.idusuario2
+				where a.idusuario = ?`, [usuario.idusuario]);
+			for (let i = lista.length - 1; i >= 0; i--) {
+				if (lista[i].idusuario2 === usuario.idusuario) {
+					lista.splice(i, 1); // Remove o elemento i da lista
+					break;
+				}
+			}
+			lista.sort((a, b) => {
+				if (a.afinidade === b.afinidade)
+					return (a.nome < b.nome ? -1 : 1); // Ordena pelo nome em ordem crescente, em caso de empate da afinidade
+				return b.afinidade - a.afinidade; // Ordena pela afinidade em ordem decrescente
+			});
+		});
+
+		return lista;
 	}
 }
