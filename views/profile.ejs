@@ -1,0 +1,48 @@
+<%- include("navbar") %>
+    <div class=container-fluid>
+        <div class="row">
+            <div class="col-sm-6">
+                <form id="form" class="panel panel-default" action="#">
+                    <label for="nome"></label>
+                    <input type="text" id="nome" name="nome" value="<%= nome%>" class="form-control" />
+                    <label for="email"></label>
+                    <input type="text" id="email" name="email" value="<%= email%>" class="form-control" />
+                    <label for="telefone"></label>
+                    <input type="text" id="telefone" name="telefone" value="<%= telefone%>" class="form-control" />
+                    <label for="imagem"></label>
+                    <input type="file" id="imagem" accept="image/*" id="imagem" name="imagem" class="form-control" />
+                
+                <input type="submit" class="btn btn-primary btn-lg btn-block"/>
+            </form>
+            </div>    
+        </div>
+
+    </div>
+
+<script type="text/javascript">	
+$(document).ready(function() {
+    $('form').submit(function(event){
+        var form = {
+            "nome"             : $('nome').val(),
+            "email"            : $('email').val(),
+            "telefone"         : $('telefone').val(),
+            "imagem"           : $('imagem').val()
+        };
+             $.ajax({
+                    url: "/api/alterar",
+                    method: "POST",
+                    data: $(form).serialize(),
+                    dataType    : 'json',
+                    success: function(data) {
+                     alert("Enviado")
+                    },
+                    error: function() {
+                     alert("Erro")
+                    }
+                });  
+
+                event.preventDefault();
+            });
+        });
+
+</script>

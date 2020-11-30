@@ -1,0 +1,70 @@
+<style type = "text/css">
+
+
+body{
+    color:rgba(29, 174, 87);
+    background: black;
+    font-family: prompt;
+   
+}
+h1{
+    color: rgba(29, 174, 87);
+    font-weight: bold;
+    margin: 100px 0px 0px 40px;
+    font-size: 20px;
+}
+.button{
+    background-color: rgba(29, 174, 87);
+    border: 1px solid rgba(29, 174, 87);
+    color: black;
+    font-weight: bold;
+    }
+.button:hover{
+    background-color: rgba(29, 174, 87, 0.5);
+    border: 1px solid  rgba(29, 174, 87, 0.5);
+}
+.margin{
+    margin: 0px 0px 30px 0px;
+}
+.imagem{
+  background-image: url("../public/images/spotify.png");
+  width: 100px;
+}
+
+</style>
+</head>
+
+<body>
+    <div class="body">
+        <div>
+            <h1>
+                SHARE MUSIC. MAKE FRIENDS_
+            </h1>
+        </div>
+
+        <div style="max-width: 400px; margin: 0 auto; padding: 10% 15px ; color: rgba(29, 174, 87);">
+            <div class="panel panel-default no-margin-bottom">
+                <div class="panel-body">
+                    
+                    <button onclick="encaminhar()" type="submit" value="Login" class="btn btn-primary btn-block button margin">Login</button>
+                </div>
+                <div class="panel-body">
+                    
+                    <input type="submit" value="Create an acount" class="btn btn-primary btn-block button" />
+                </div>
+            </div>
+        </div> 
+ </div>
+ <footer>
+    <div class="imagem">
+        
+    </div>
+ </footer>
+    <script type="text/javascript">
+    function encaminhar(){
+        url = "<%- url %>";
+        window.open(url);
+    }
+    </script>
+</body>
+

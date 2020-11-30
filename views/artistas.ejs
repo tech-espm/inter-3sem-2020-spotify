@@ -1,0 +1,9 @@
+<%- include("navbar") %>
+<div class="container">
+    <% musicas.forEach(e => { %>
+     <div class="row">
+         <%- e.nome %> 
+         <img src=<%- e.imagem %> />
+     </div>  
+    <%  }); %>
+</div>

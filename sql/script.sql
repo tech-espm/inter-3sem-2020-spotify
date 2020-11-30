@@ -17,12 +17,14 @@ CREATE TABLE usuario (
   UNIQUE KEY usuario_idspotify_UN (idspotify)
 );
 
+
 CREATE TABLE musica (
   idmusica bigint NOT NULL AUTO_INCREMENT,
   idspotify varchar(50) NOT NULL,
   nome varchar(100) NOT NULL,
   idalbum varchar(50) NOT NULL,
   nomealbum varchar(500) NOT NULL,
+  imagem varchar(200) NOT NULL,
   PRIMARY KEY (idmusica),
   UNIQUE KEY musica_idspotify_UN (idspotify)
 );
@@ -31,6 +33,7 @@ CREATE TABLE artista (
   idartista bigint NOT NULL AUTO_INCREMENT,
   idspotify varchar(50) NOT NULL,
   nome varchar(100) NOT NULL,
+  imagem varchar (200) NOT NULL,
   PRIMARY KEY (idartista),
   UNIQUE KEY artista_idspotify_UN (idspotify)
 );
@@ -75,6 +78,7 @@ CREATE TABLE musica_mais_tocada (
   CONSTRAINT idmusica_mais_tocada_idusuario_FK FOREIGN KEY (idusuario) REFERENCES usuario (idusuario) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT idmusica_mais_tocada_idmusica_FK FOREIGN KEY (idmusica) REFERENCES musica (idmusica) ON DELETE CASCADE ON UPDATE RESTRICT
 );
+
 
 CREATE TABLE afinidade (
   idafinidade bigint NOT NULL AUTO_INCREMENT,

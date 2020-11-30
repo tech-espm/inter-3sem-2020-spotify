@@ -18,6 +18,7 @@ export = class Usuario {
 	public idspotify: string;
 	public nome: string;
 	public email: string;
+	public imagem : string;
 	public accessToken: string;
 	public refreshToken: string;
 	public validadeToken: number;
@@ -163,7 +164,7 @@ export = class Usuario {
 
 	public static async atualizar(usuario: Usuario): Promise<void> {
 		await Sql.conectar(async (sql)=>{
-			await sql.query("UPDATE usuario SET nome = ?, email = ?, accessToken = ?, refreshToken = ?, validadeToken = ? WHERE idspotify = ?", [usuario.nome, usuario.email, usuario.accessToken, usuario.refreshToken, usuario.validadeToken, usuario.idspotify]);
+			await sql.query("UPDATE usuario SET nome = ?, email = ?, imagem = ?, telefone = ? WHERE idspotify = ?", [usuario.nome, usuario.email, usuario.imagem, usuario.telefone, usuario.idspotify]);
 		});
 	}
 

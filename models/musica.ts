@@ -14,6 +14,7 @@ export = class Musica {
     public nome: string;
     public idalbum: string;
     public nomealbum: string;
+    public imagem : string;
 
     public static async merge(idusuario: number, musicas: Musica[]): Promise<void> {
         await Sql.conectar(async (sql) => {
@@ -31,7 +32,7 @@ export = class Musica {
                     if (musicas[i].nomealbum && musicas[i].nomealbum.length > 50)
                         musicas[i].nomealbum = musicas[i].nomealbum.substr(0, 50);
 
-                    await sql.query("insert into musica (idspotify, nome, idalbum, nomealbum) values (?, ?, ?, ?)", [musicas[i].idspotify, musicas[i].nome, musicas[i].idalbum, musicas[i].nomealbum]);
+                    await sql.query("insert into musica (idspotify, nome, idalbum, nomealbum,imagem) values (?, ?, ?, ?,?)", [musicas[i].idspotify, musicas[i].nome, musicas[i].idalbum, musicas[i].nomealbum,musicas[i].imagem]);
                     idmusica = await sql.scalar("select last_insert_id()");
                 }
                 musicas[i].idmusica = idmusica;
@@ -97,7 +98,7 @@ export = class Musica {
         let lista: Musica[] = null;
 
         await Sql.conectar(async (sql) => {
-            lista = await sql.query("select m.idmusica, m.idspotify, m.nome, m.idalbum, m.nomealbum from musica_mais_tocada mt inner join musica m on m.idmusica = mt.idmusica where mt.idusuario = ? order by mt.ordem", [idusuario]);
+            lista = await sql.query("select m.idmusica, m.idspotify, m.nome, m.idalbum, m.nomealbum, m.imagem from musica_mais_tocada mt inner join musica m on m.idmusica = mt.idmusica where mt.idusuario = ? order by mt.ordem", [idusuario]);
         });
 
         return lista || [];

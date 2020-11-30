@@ -12,6 +12,7 @@ import Genero = require("./models/genero");
 
 const app = express();
 
+
 //views e cache
 app.set("views", path.join(__dirname, "/views"));
 app.use(cookieParser());
@@ -40,7 +41,10 @@ app.get("/login",(req: express.Request, res: express.Response) => {
 	const authorizeURL = api.createAuthorizeURL(SpotifyClient.scopes, "");
 
 	// https://accounts.spotify.com:443/authorize?client_id=5fe01282e44241328a84e7c5cc169165&response_type=code&redirect_uri=https://example.com/callback&scope=user-read-private%20user-read-email&state=some-state-of-my-choice
-	res.json(authorizeURL);
+	res.render("login", {
+		layout: "layout-externo",
+		url : authorizeURL
+		});
 
 });
 
@@ -50,7 +54,8 @@ app.get("/callback", wrap(async (req: express.Request, res: express.Response) =>
 
 	const usuario = await Usuario.efetuarLogin(res, code);
 
-	res.json("Código recebido: " + code);
+	res.redirect("http://localhost:1337/");
+	
 
 }));
 
@@ -86,6 +91,7 @@ app.get("/tracks", wrap(async (req: express.Request, res: express.Response) => {
 				if (track.album) {
 					musica.idalbum = track.album.id;
 					musica.nomealbum = track.album.name;
+					musica.imagem = track.album.images[2].url;
 					toptracks.push(musica);
 				}
 			}
@@ -93,7 +99,12 @@ app.get("/tracks", wrap(async (req: express.Request, res: express.Response) => {
 			await Musica.merge(usuario.idusuario, toptracks);
 		}
 
-		res.json(await Musica.listar(usuario.idusuario));
+		//res.json(await Musica.listar(usuario.idusuario));
+		res.render("musicas",{
+			layout : "layout-externo",
+			usuario : usuario,
+			musicas : await Musica.listar(usuario.idusuario)
+		})
 
 	} catch (ex) {
 		res.status(500).json("Erro: " + ex);
@@ -130,6 +141,7 @@ app.get("/artists", wrap(async (req: express.Request, res: express.Response) => 
 				artista.idartista = 0;
 				artista.idspotify = artist.id;
 				artista.nome = artist.name;
+				artista.imagem = artist.images[2].url;
 				topartists.push(artista);
 
 			}
@@ -151,7 +163,12 @@ app.get("/artists", wrap(async (req: express.Request, res: express.Response) => 
 			}
 		}
 
-		res.json(await Artista.listar(usuario.idusuario));
+		//res.json(await Artista.listar(usuario.idusuario));
+		res.render("artistas",{
+			layout : "layout-externo",
+			usuario : usuario,
+			musicas : await Artista.listar(usuario.idusuario)
+		})
 	} catch (ex) {
 		res.status(500).json("Erro: " + ex);
 	}
@@ -176,11 +193,57 @@ app.get("/afinidade", wrap(async (req: express.Request, res: express.Response) =
 
 }));
 
-app.get("/", (req: express.Request, res: express.Response) => {
+app.use("/api/alterar", require("./routes/api/alterar"));
 
-	res.render("index");
+app.get("/", wrap(async(req: express.Request, res: express.Response) => {
+	try {
+		const usuario = await Usuario.cookie(req);
 
-});
+		if (!usuario) {
+			res.status(400).json("Usuário não encontrado");
+			//res.redirect("http://localhost:1337/login")
+			return;
+		}
+		res.render("home",{
+			layout: "layout-externo"
+	
+		}); 
+
+		
+	}
+	
+	catch (ex) {
+			res.status(500).json("Erro: " + ex);
+		}
+	
+
+}));
+
+app.get("/profile", wrap(async(req: express.Request, res: express.Response) => {
+	try {
+		const usuario = await Usuario.cookie(req);
+		if (!usuario) {
+			res.status(400).json("Usuário não encontrado");
+			//res.redirect("http://localhost:1337/login")
+			return;
+		}
+		
+		res.render("profile",{
+			layout: "layout-externo",
+			nome : usuario.nome,
+			email : usuario.email,
+			telefone : usuario.telefone,
+			imagem : usuario.imagem
+		}); 
+
+	}
+	//res.json(await Usuario.obter(usuario));
+	catch (ex){
+		
+		res.status(500).json("Erro: " + ex);
+	}
+
+}));
 
 // >= 1024 && <= 65535 (0xFFFF - 16 bits)
 app.listen(1337, () => {
