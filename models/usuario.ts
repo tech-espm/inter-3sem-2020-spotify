@@ -18,7 +18,6 @@ export = class Usuario {
 	public idspotify: string;
 	public nome: string;
 	public email: string;
-	public imagem : string;
 	public accessToken: string;
 	public refreshToken: string;
 	public validadeToken: number;
@@ -164,13 +163,13 @@ export = class Usuario {
 
 	public static async atualizar(usuario: Usuario): Promise<void> {
 		await Sql.conectar(async (sql)=>{
-			await sql.query("UPDATE usuario SET nome = ?, email = ?, imagem = ?, telefone = ? WHERE idspotify = ?", [usuario.nome, usuario.email, usuario.imagem, usuario.telefone, usuario.idspotify]);
+			await sql.query("UPDATE usuario SET nome = ?, email = ?, telefone = ?, accessToken = ?, refreshToken = ?, validadeToken = ? WHERE idusuario = ?", [usuario.nome, usuario.email, usuario.telefone, usuario.accessToken, usuario.refreshToken, usuario.validadeToken, usuario.idusuario]);
 		});
 	}
 
 	public static async deletar(usuario:Usuario): Promise<void> {
 		await Sql.conectar(async (sql)=>{
-			await sql.query("DELETE FROM usuario WHERE idspotify = ?", [usuario.idspotify]);
+			await sql.query("DELETE FROM usuario WHERE idusuario = ?", [usuario.idusuario]);
 		});
 	}
 

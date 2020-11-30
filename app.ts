@@ -200,8 +200,8 @@ app.get("/", wrap(async(req: express.Request, res: express.Response) => {
 		const usuario = await Usuario.cookie(req);
 
 		if (!usuario) {
-			res.status(400).json("Usuário não encontrado");
-			//res.redirect("http://localhost:1337/login")
+			//res.status(400).json("Usuário não encontrado");
+			res.redirect("/login");
 			return;
 		}
 		res.render("home",{
@@ -232,8 +232,7 @@ app.get("/profile", wrap(async(req: express.Request, res: express.Response) => {
 			layout: "layout-externo",
 			nome : usuario.nome,
 			email : usuario.email,
-			telefone : usuario.telefone,
-			imagem : usuario.imagem
+			telefone : usuario.telefone
 		}); 
 
 	}
