@@ -1,4 +1,5 @@
 import express = require("express");
+import bodyParser = require('body-parser');
 import cookieParser = require("cookie-parser");
 import wrap = require("express-async-error-wrapper");
 import ejs = require("ejs");
@@ -21,6 +22,7 @@ app.use(express.static(path.join(__dirname, "/public"), {
 	etag: false,
 	maxAge: "30d"
 }));
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 ejs.cache = lru(200);
@@ -167,7 +169,7 @@ app.get("/artists", wrap(async (req: express.Request, res: express.Response) => 
 		res.render("artistas",{
 			layout : "layout-externo",
 			usuario : usuario,
-			musicas : await Artista.listar(usuario.idusuario)
+			artistas : await Artista.listar(usuario.idusuario)
 		})
 	} catch (ex) {
 		res.status(500).json("Erro: " + ex);
@@ -183,8 +185,12 @@ app.get("/afinidade", wrap(async (req: express.Request, res: express.Response) =
 			res.status(400).json("Usuário não encontrado");
 			return;
 		}
-
-		res.json(await Usuario.afinidade(usuario));
+		res.render("afinidade",{
+			layout : "layout-externo",
+			usuario : usuario,
+			afinidade : await Usuario.afinidade(usuario)
+		})
+		
 	}
 	
 	catch (ex) {

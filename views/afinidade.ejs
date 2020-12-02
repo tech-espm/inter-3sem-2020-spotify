@@ -1,9 +1,9 @@
 <%- include("navbar") %>
 <div class="container">
-    <% artistas.forEach(e => { %>
+    <% afinidade.forEach(e => { %>
      <div class="row">
          <%- e.nome %> 
-         <img src=<%- e.imagem %> />
+         <%- e.afinidade * 2%> <h>%</h>
      </div>  
     <%  }); %>
 </div>
