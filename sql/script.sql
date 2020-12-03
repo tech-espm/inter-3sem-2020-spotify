@@ -7,6 +7,8 @@ CREATE TABLE usuario (
   nome varchar(100) NOT NULL,
   email varchar(100) NOT NULL,
   telefone varchar(50) DEFAULT NULL,
+  imagem varchar(200) DEFAULT NULL,
+  url varchar(200) DEFAULT NULL,
   token varchar(50) DEFAULT NULL,
   accessToken varchar(500) DEFAULT NULL,
   refreshToken varchar(500) DEFAULT NULL,
