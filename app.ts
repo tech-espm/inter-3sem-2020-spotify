@@ -240,9 +240,7 @@ app.get("/profile", wrap(async(req: express.Request, res: express.Response) => {
 			layout: "layout-externo",
 			nome : usuario.nome,
 			email : usuario.email,
-			telefone : usuario.telefone,
-			imagem : usuario.imagem,
-			url : usuario.url
+			telefone : usuario.telefone
 		}); 
 
 	}

@@ -157,8 +157,8 @@ export = class Usuario {
 
 		await Sql.conectar(async(sql) => {
 			// @@@ Voltar quando o cookie estiver funcionando
-			//lista = await sql.query("SELECT idusuario, idspotify, nome, email, accessToken, refreshToken, validadeToken FROM usuario WHERE idspotify = ?", [idspotify]);
-			lista = await sql.query("SELECT idusuario, idspotify, nome, email, accessToken, refreshToken, validadeToken FROM usuario limit 1");
+			lista = await sql.query("SELECT idusuario, idspotify, nome, email, telefone, imagem, url, accessToken, refreshToken, validadeToken FROM usuario WHERE idspotify = ?", [idspotify]);
+			
 		});
 
 		if (lista && lista[0])

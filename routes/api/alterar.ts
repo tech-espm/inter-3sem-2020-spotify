@@ -12,14 +12,12 @@ router.post("/profile",wrap(async(req: express.Request, res: express.Response) =
     if(req.body.email){
     usuario.email = req.body.email;
     }
-
     usuario.telefone = req.body.telefone;
-    
-    await Usuario.atualizar(usuario);
 
-    //console.log(req.body);
-    
-	
+    const u = await Usuario.obter(usuario.idspotify);
+    usuario.imagem = u.imagem;
+    usuario.url = u.url;
+    await Usuario.atualizar(usuario);
 }));
 
 export = router;
