@@ -1,49 +1,49 @@
-<%- include("navbar") %>
-    <div class=container-fluid>
-        <div class="row">
-            <div class="col-sm-6">
-                <form id="form" class="panel panel-default" action="#">
-                    <div class="form-group">
-                    <label for="nome"></label>
-                    <input type="text" id="nome" name="nome" value="<%= nome%>" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                    <label for="email"></label>
-                    <input type="text" id="email" name="email" value="<%= email%>" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                    <label for="telefone"></label>
-                    <input type="text" id="telefone" name="telefone" value="<%= telefone%>" class="form-control" />
-                    </div>
-                <input type="submit" class="btn btn-primary btn-lg btn-block"/>
-            </form>
-            </div>    
-        </div>
-
+  <%- include("navbar") %>
+<div class=container-fluid>
+    <div class="row">
+        <div class="col-sm-12">
+            <form id="form" class="alinhar panel panel-default" action="#">
+                <div class="form-group">
+                <label for="nome"></label>
+                <input type="text" id="nome" name="nome" value="<%= nome%>" class="form-control" />
+                </div>
+                <div class="form-group">
+                <label for="email"></label>
+                <input type="text" id="email" name="email" value="<%= email%>" class="form-control" />
+                </div>
+                <div class="form-group">
+                <label for="telefone"></label>
+                <input type="text" id="telefone" name="telefone" value="<%= telefone%>" class="form-control" />
+                </div>
+            <input type="submit" class="btn btn-primary btn-lg btn-block"/>
+        </form>
+        </div>    
     </div>
+
+</div>
 
 <script type="text/javascript">	
 $(document).ready(function() {
-    $('#form').submit(function(event){
-        var form = {
-            nome : $('#nome').val(),
-            email : $('#email').val(),
-            telefone : $('#telefone').val()
-        };
-             $.ajax({
-                    url: "/api/alterar/profile",
-                    method: "POST",
-                    data: JSON.stringify(form),
-                    processData: false,
-				    contentType: "application/json",
-                    success: function() {
-                     alert("Enviado")
-                    },
-                    error: function() {
-                     alert("Erro")
-                    }
-                });  
-                event.preventDefault();
-            });
+$('#form').submit(function(event){
+    var form = {
+        nome : $('#nome').val(),
+        email : $('#email').val(),
+        telefone : $('#telefone').val()
+    };
+         $.ajax({
+                url: "/api/alterar/profile",
+                method: "POST",
+                data: JSON.stringify(form),
+                processData: false,
+                contentType: "application/json",
+                success: function(data) {
+                 alert("Enviado")
+                },
+                error: function() {
+                 alert("Erro")
+                }
+            });  
+            event.preventDefault();
         });
+    });
 </script>
