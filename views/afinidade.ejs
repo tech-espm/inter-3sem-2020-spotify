@@ -2,8 +2,14 @@
 <div class="container">
     <% afinidade.forEach(e => { %>
      <div class="row">
+
+        <% if(!e.imagem){ %>
+             <img src="../public/images/icon.png"/>
+        <% } %>
+        <img src=<%- e.imagem %> />   
          <%- e.nome %> 
          <%- e.afinidade * 2%> <h>%</h>
+         <a href=<%- e.url%>>URL Spotify</a>
      </div>  
     <%  }); %>
 </div>

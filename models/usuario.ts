@@ -22,6 +22,8 @@ export = class Usuario {
 	public refreshToken: string;
 	public validadeToken: number;
 	public telefone: string;
+	public imagem: string;
+	public url: string;
 	public criacao: string;
 
 	public static async obterIdUsuario(idspotify: string): Promise<number> {
@@ -117,9 +119,19 @@ export = class Usuario {
 
 		const me = await api.getMe();
 
+		let a: JSON[] = me.body.images;
+	
 		usuario.idspotify = me.body.id;
 		usuario.nome = me.body.display_name;
 		usuario.email = me.body.email;
+		if(a.length !== 0 ){
+		usuario.imagem = me.body.images[0].url;
+		}
+		else {
+			usuario.imagem = null;
+		}
+		usuario.url = me.body.external_urls.spotify;
+
 
 		usuario.idusuario = await Usuario.obterIdUsuario(usuario.idspotify);
 
@@ -156,14 +168,14 @@ export = class Usuario {
 	}
 	public static async inserir(usuario: Usuario): Promise<void> {
 		await Sql.conectar(async (sql)=>{
-			await sql.query("INSERT INTO usuario (idspotify, nome, email, accessToken, refreshToken, validadeToken, criacao) VALUES (?, ?, ?, ?, ?, ?, now())", [usuario.idspotify, usuario.nome, usuario.email, usuario.accessToken, usuario.refreshToken, usuario.validadeToken]);
+			await sql.query("INSERT INTO usuario (idspotify, nome, email, imagem, url, accessToken, refreshToken, validadeToken, criacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, now())", [usuario.idspotify, usuario.nome, usuario.email,usuario.imagem, usuario.url, usuario.accessToken, usuario.refreshToken, usuario.validadeToken]);
 			usuario.idusuario = await sql.scalar("SELECT last_insert_id()");
 		});
 	}
 
 	public static async atualizar(usuario: Usuario): Promise<void> {
 		await Sql.conectar(async (sql)=>{
-			await sql.query("UPDATE usuario SET nome = ?, email = ?, telefone = ?, accessToken = ?, refreshToken = ?, validadeToken = ? WHERE idusuario = ?", [usuario.nome, usuario.email, usuario.telefone, usuario.accessToken, usuario.refreshToken, usuario.validadeToken, usuario.idusuario]);
+			await sql.query("UPDATE usuario SET nome = ?, email = ?, telefone = ?, imagem = ?, url = ?, accessToken = ?, refreshToken = ?, validadeToken = ? WHERE idusuario = ?", [usuario.nome, usuario.email, usuario.telefone,usuario.imagem, usuario.url, usuario.accessToken, usuario.refreshToken, usuario.validadeToken, usuario.idusuario]);
 		});
 	}
 
@@ -198,10 +210,10 @@ export = class Usuario {
 			//	inner join usuario u on u.idusuario = a.idusuario2
 			//	where a.idusuario = ? and a.idusuario2 <> ?
 			//	order by a.afinidade desc, u.nome asc`, [usuario.idusuario, usuario.idusuario]);
-			lista = await sql.query(`select a.idusuario2, u.nome, a.afinidade
+			lista = await sql.query(`select a.idusuario2, u.nome, u.url, u.imagem, a.afinidade
 				from afinidade a
 				inner join usuario u on u.idusuario = a.idusuario2
-				where a.idusuario = ?`, [usuario.idusuario]);
+				where a.idusuario = 1`, [usuario.idusuario]);
 			for (let i = lista.length - 1; i >= 0; i--) {
 				if (lista[i].idusuario2 === usuario.idusuario) {
 					lista.splice(i, 1); // Remove o elemento i da lista

@@ -10,6 +10,7 @@ import Musica = require("./models/musica");
 import Artista = require("./models/artista")
 import Usuario = require("./models/usuario");
 import Genero = require("./models/genero");
+import { url } from "inspector";
 
 const app = express();
 
@@ -46,7 +47,7 @@ app.get("/login",(req: express.Request, res: express.Response) => {
 	res.render("login", {
 		layout: "layout-externo",
 		url : authorizeURL
-		});
+		});	
 
 });
 
@@ -189,6 +190,7 @@ app.get("/afinidade", wrap(async (req: express.Request, res: express.Response) =
 			layout : "layout-externo",
 			usuario : usuario,
 			afinidade : await Usuario.afinidade(usuario)
+
 		})
 		
 	}
@@ -213,7 +215,7 @@ app.get("/", wrap(async(req: express.Request, res: express.Response) => {
 		res.render("home",{
 			layout: "layout-externo"
 	
-		}); 
+		})
 
 		
 	}
@@ -238,7 +240,9 @@ app.get("/profile", wrap(async(req: express.Request, res: express.Response) => {
 			layout: "layout-externo",
 			nome : usuario.nome,
 			email : usuario.email,
-			telefone : usuario.telefone
+			telefone : usuario.telefone,
+			imagem : usuario.imagem,
+			url : usuario.url
 		}); 
 
 	}
