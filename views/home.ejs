@@ -1,13 +1,65 @@
 <%- include("navbar") %>
-<div style="  display: grid; grid-template-columns: auto auto auto auto auto auto; grid-gap: 10px; padding: 10px;">
-    <div style="grid-column: 1 / 4;">
-        aaa
+
+   <div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>Top 5</h1>
+        </div>
     </div>
-    <div style="grid-column: 4 /  7;">
-        aaa
-    </div>
-    <div style="grid-column: 1 /  7;">
-        a
+    <div class="row">
+            
+            <div class="col-sm-5 marginLeft">
+                <div>
+                    <h2>
+                        Músicas
+                    </h2>
+                </div>
+                <% var cont = 1%>
+                 <% musicas.forEach(e => { %>
+                <div><%- cont%> <%- e.nome %> </div>
+               <p></p>
+                <img class="tamanho2" src=<%- e.imagem %> />
+                <% cont = cont + 1 }); %>
+             </div>  
+       
+            <div class="col-sm-5 marginLeft">
+                <div>
+                    <h2>
+                       Artistas
+                    </h2>
+                </div>
+                <% var cont = 1%>
+                <% artistas.forEach(e => { %>
+                  <div><%- cont%>  <%- e.nome %> </div>
+                     
+                      <p></p>
+                     <img class="tamanho2" src=<%- e.imagem %> />
+                <% cont = cont + 1  }); %>
+            </div>
+   </div>
+ 
+    <div class="row">
+
+        <div class="col-sm-12">
+            <div style="margin-bottom: 30px;">
+                <h2 >
+                    Matchs
+                </h2>
+            </div>
+            <% afinidades.forEach(e => { %>
+                <div class="row">
+                   
+                       <p class="p margin3">Seu perfil teve </p>
+                       
+                       <p class="p margin4"> <%- e.afinidade * 2%>% de afinidade com o usuário </p>
+                      
+                       <a class = "p margin4" href=<%- e.url%>>Teste</a>
+                      
+                       <img class = "tamanho2 margin4 " src="https://image.flaticon.com/icons/png/512/147/147144.png"/>
+                </div>  
+                  <%  }); %>
+        </div>
+        </div>
     </div>
 
 </div>

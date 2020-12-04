@@ -213,7 +213,10 @@ app.get("/", wrap(async(req: express.Request, res: express.Response) => {
 			return;
 		}
 		res.render("home",{
-			layout: "layout-externo"
+			layout: "layout-externo",
+			musicas : await (await Musica.listar(usuario.idusuario)).slice(0,5),
+			artistas : await (await Artista.listar(usuario.idusuario)).slice(0,5),
+			afinidades : await (await Usuario.afinidade(usuario)).slice(0,5)
 	
 		})
 
