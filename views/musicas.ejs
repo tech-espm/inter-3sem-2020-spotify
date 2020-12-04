@@ -5,15 +5,16 @@
             <h1>Músicas mais ouvidas</h1>
         </div>
     </div>
+    <% var cont = 1%>
     <% musicas.forEach(e => { %>
      <div class="row">
          <div class="col-sm-6 alinhar3">
+            <div><%- cont%></div>
             <%- e.nome %> 
-           <!--<%- e.nomealbum %>-->
-           <p><p></p>
+           <p></p>
             <img class = "marginImagemMusica" src=<%- e.imagem %> />
          </div>
          
      </div>  
-    <%  }); %>
+     <% cont = cont + 1 }); %>
 </div>

@@ -5,12 +5,14 @@
             <h1>Artistas mais ouvidos</h1>
         </div>
     </div>
+    <% var cont = 1%>
     <% artistas.forEach(e => { %>
      <div class="row">
          <div class="col-sm-2 alinhar2"> 
+            <div><%- cont%></div>
              <%- e.nome %> 
             <img class="tamanho" src=<%- e.imagem %>
              /></div>
-     </div>  
-    <%  }); %>
+     </div> 
+     <% cont = cont + 1  }); %>
 </div>
