@@ -1,10 +1,19 @@
 <%- include("navbar") %>
 <div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>Músicas mais ouvidas</h1>
+        </div>
+    </div>
     <% musicas.forEach(e => { %>
      <div class="row">
-         <%- e.nome %> 
-         <%- e.nomealbum %> 
-         <img src=<%- e.imagem %> />
+         <div class="col-sm-6 alinhar3">
+            <%- e.nome %> 
+           <!--<%- e.nomealbum %>-->
+           <p><p></p>
+            <img class = "marginImagemMusica" src=<%- e.imagem %> />
+         </div>
+         
      </div>  
     <%  }); %>
 </div>

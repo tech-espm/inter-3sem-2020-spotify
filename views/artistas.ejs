@@ -1,9 +1,16 @@
 <%- include("navbar") %>
 <div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>Artistas mais ouvidos</h1>
+        </div>
+    </div>
     <% artistas.forEach(e => { %>
      <div class="row">
-         <%- e.nome %> 
-         <img src=<%- e.imagem %> />
+         <div class="col-sm-2 alinhar2"> 
+             <%- e.nome %> 
+            <img class="tamanho" src=<%- e.imagem %>
+             /></div>
      </div>  
     <%  }); %>
 </div>
